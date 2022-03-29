@@ -8,7 +8,7 @@ function help() {
         usage
         exit
     fi
-    type $1
+    type $1 | tail -n +2
 }
 
 function undo-commit() {
