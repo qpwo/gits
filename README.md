@@ -2,6 +2,10 @@
 
 **Commands for the 40 most common git problems on stack overflow**
 
+
+<img width="663" alt="image" src="https://user-images.githubusercontent.com/10591373/160515178-64895daa-0ec8-44a7-ad38-c79e85812c67.png">
+
+
 Installation:
 
 ```sh
