@@ -2,6 +2,15 @@
 
 set -euo pipefail
 
+function help() {
+    set +x
+    if [ "$#" -eq 0 ]; then
+        usage
+        exit
+    fi
+    type $1
+}
+
 function undo-commit() {
     git reset --soft HEAD~1
     git push -f
@@ -135,7 +144,7 @@ function apply-commit() {
     git cherry-pick -x $1
 }
 
-function export() {
+function export-files() {
     git archive --format zip --output export.zip main
     echo export.zip
 }
@@ -190,3 +199,34 @@ function pull-all-branches() {
     git fetch --all
     git pull --all
 }
+
+commands=("help" "undo-commit" "delete-branch" "ammend-message" "rename-branch" "unadd" "pull-overwrite" "discard" "discard-everything" "checkout" "untrack" "merge-in-main" "new-branch" "push-all-branches" "add-empty-dir" "combine-last-n-commits" "back-to-last-pushed" "delete-remote-tag" "change-url" "undo-rebase" "move-working-tree-to-branch" "file-history" "current-branch" "files-in-commit" "undo-hard-reset" "set-commit-editor" "push-tag" "push-all-tags" "stash-interactive" "apply-commit" "export-files" "show-staged" "last-commit-hash" "delete-all-merged-branches" "branch-from-n-before" "ignore-except" "update-all-submodules" "unpushed-commits" "unpushed-commits-diff" "clone-at-tag" "clone-shallow" "pull-all-branches")
+
+function usage() {
+    echo "gits: git snippets"
+    echo
+    echo "commands:"
+    echo "${commands[*]}" | fold -sw 80 | sed 's/^/  /'
+    # for c in "${commands[@]}"; do echo -e "\t" $c; done
+}
+
+# wrong number
+if [ "$#" -eq 0 ]; then
+    usage
+    exit 1
+fi
+
+if [[ $1 == "help" ]]; then
+    eval "$@"
+    exit
+fi
+
+# Check if command is valid, i.e. in valid list; if so then execute it
+if [[ " ${commands[*]} " =~ " ${1} " ]]; then
+    set -x # print commands as executed
+    eval "$@"
+else
+    echo "Unknown command: $1"
+    usage
+    exit 1
+fi
